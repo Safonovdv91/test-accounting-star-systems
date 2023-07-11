@@ -1,3 +1,5 @@
+from Model.mongo_database import MongoDatabase
+
 
 class Universe_object:
     """
@@ -45,11 +47,63 @@ class CelestialBody(Universe_object):
     """ атрибуты:имя, тип, возраст, диаметр, масса
     методы:
         добавлять, удалять, редактировать"""
-    def __init__(self, type_object: str, name: str, age: float, diameter: float, star_system):
-        super().__init__(name, age)
-        self.type_object = type_object
-        self.diameter = diameter
-        self.star_system_id = star_system
+    def __init__(self, type_object="Unknown", diametr=0, weight=0, id_star_system="Unknown"):
+        super().__init__()
+        self._is_star_system = None
+        self._weight = None
+        self._type_object = None
+        self._diameter = None
+        self.set_type_object(type_object)
+        self.set_diameter(diametr)
+        self.set_weight(weight)
+        self.set_star_system_id(id_star_system)
+
+    def set_type_object(self, choose):
+        """Choose from [star, blackhole, blue gigant]"""
+        if choose == "Unknown":
+            self._type_object = choose
+            return True
+        type_objects = ["1 - Star", "2 - Worm Hole", "3 - Blue Gigant", "4 - Red Gigant"]
+        try:
+            choose = int(choose)
+            self._type_object = type_objects[choose-1]
+        except TypeError:
+            return False
+        except IndexError:
+            return False
+        return True
+
+    def set_diameter(self, diameter=None):
+        if diameter is None:
+            self._diameter = diameter
+            return True
+        try:
+            if float(diameter) >= 0:
+                self._diameter = float(diameter)
+                return True
+        except ValueError:
+            return False
+        except TypeError:
+            return False
+        return False
+
+    def set_weight(self, weight):
+        if weight is None:
+            self._weight = weight
+            return True
+        try:
+            if float(weight) >= 0:
+                self._weight = float(weight)
+                return True
+        except ValueError:
+            return False
+        except TypeError:
+            return False
+        return False
+
+    def set_star_system_id(self, id_star_system):
+        self._is_star_system = id_star_system
+        """ пока не известно, будет выпадать список из существующих систем"""
 
 class Star_System(Universe_object):
     """
@@ -77,7 +131,8 @@ class Star_System(Universe_object):
     def get_mass_center(self):
         return self._mass_center
 
-    def create_new(self):
+class Creator:
+    def create_new_star_system(self):
         new_star_system = Star_System()
         print("What the system name?")
         print("name:", end="")
@@ -87,15 +142,39 @@ class Star_System(Universe_object):
         print("Age: ", end="")
         while not new_star_system.set_age(input()):
             print("Type correct age: ", end="")
-        return new_star_system
+        print(f"Do {new_star_system.get_name()} have mass center?")
+        if input().upper() == "YES" or input().upper() == "Y":
+            print("What is object is centr?")
+            # тут вывести планеты которые принаджжат этой системы
+        else:
+            print("Ok, system doesn't have mass center.")
+        print("Adding to db")
+        server = MongoDatabase("Star_systems")
+        server.add(new_star_system)
+        server.close()
+        print("Adding success")
+
+    def choose_type_universe_object(self):
+        """Choose from [star, blackhole, blue gigant, Red Gigant]"""
+        type_objects = ["1 - Star", "2 - Worm Hole", "3 - Blue Gigant", "4 - Red Gigant"]
+        print("Choose type of object:")
+        for each in type_objects:
+            print(each)
+        try:
+            choose = int(input())
+            if 0 < choose < len(type_objects) + 1:
+                return type_objects[choose]
+        except TypeError:
+            return False
+
 
 
 def main():
     print("What do u want:")
-    print("1 - Create star system , 2 - Create any")
+    print("1 - Create star system , 2 - Create planet")
     if input() == "1":
-        print(Star_System().create_new())
-
+        print(Creator().create_new_star_system())
+        print("Information add")
 
     types_universe_obj = ["Star", "Black Hole", "Planet", "Satellite"]
 
