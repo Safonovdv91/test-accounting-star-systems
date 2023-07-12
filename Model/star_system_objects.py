@@ -21,6 +21,9 @@ class Universe_object:
         self.set_age(age)
 
     def set_name(self, name):
+        if name == "":
+            self._name = "Unknown"
+            return True
         if type(name) is str:
             self._name = name
             return True
@@ -49,7 +52,7 @@ class CelestialBody(Universe_object):
         добавлять, удалять, редактировать"""
     def __init__(self, type_object="Unknown", diametr=0, weight=0, id_star_system="Unknown"):
         super().__init__()
-        self._is_star_system = None
+        self._id_star_system = None
         self._weight = None
         self._type_object = None
         self._diameter = None
@@ -73,6 +76,9 @@ class CelestialBody(Universe_object):
             return False
         return True
 
+    def get_type_object(self):
+        return self._type_object
+
     def set_diameter(self, diameter=None):
         if diameter is None:
             self._diameter = diameter
@@ -86,6 +92,9 @@ class CelestialBody(Universe_object):
         except TypeError:
             return False
         return False
+
+    def get_diameter(self):
+        return self._diameter
 
     def set_weight(self, weight):
         if weight is None:
@@ -101,9 +110,17 @@ class CelestialBody(Universe_object):
             return False
         return False
 
-    def set_star_system_id(self, id_star_system):
-        self._is_star_system = id_star_system
+    def get_weight(self):
+        return self._weight
+
+    def set_star_system_id(self, id_star_system="unknown"):
+
+        self._id_star_system = id_star_system
         """ пока не известно, будет выпадать список из существующих систем"""
+
+    def get_star_system_id(self):
+        return self._id_star_system
+
 
 class Star_System(Universe_object):
     """
@@ -131,28 +148,7 @@ class Star_System(Universe_object):
     def get_mass_center(self):
         return self._mass_center
 
-class Creator:
-    def create_new_star_system(self):
-        new_star_system = Star_System()
-        print("What the system name?")
-        print("name:", end="")
-        while not new_star_system.set_name(input()):
-            print("Print plz correct name")
-        print("What the system age?")
-        print("Age: ", end="")
-        while not new_star_system.set_age(input()):
-            print("Type correct age: ", end="")
-        print(f"Do {new_star_system.get_name()} have mass center?")
-        if input().upper() == "YES" or input().upper() == "Y":
-            print("What is object is centr?")
-            # тут вывести планеты которые принаджжат этой системы
-        else:
-            print("Ok, system doesn't have mass center.")
-        print("Adding to db")
-        server = MongoDatabase("Star_systems")
-        server.add(new_star_system)
-        server.close()
-        print("Adding success")
+
 
     def choose_type_universe_object(self):
         """Choose from [star, blackhole, blue gigant, Red Gigant]"""
@@ -173,7 +169,7 @@ def main():
     print("What do u want:")
     print("1 - Create star system , 2 - Create planet")
     if input() == "1":
-        print(Creator().create_new_star_system())
+        print("adding")
         print("Information add")
 
     types_universe_obj = ["Star", "Black Hole", "Planet", "Satellite"]
