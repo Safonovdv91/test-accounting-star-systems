@@ -12,7 +12,7 @@ class MongoDatabase:
     def close(self):
         self.connection.close()
 
-    def add(self, obj):
+    def add_star_system(self, obj):
         collection = self.universe[self._collection_name]
         collection.insert_one({
             "name": obj.get_name(),
@@ -32,10 +32,18 @@ class MongoDatabase:
             "star_system": obj.get_star_system_id()
         })
 
+    def get_object_from_star_system(self, name_star_system):
+        collection = self.universe[self._collection_name]
+        return collection.find({"name": name_star_system})
+
+
     def get(self, name="Any"):
         if name == "Any":
             return self.universe[self._collection_name].find()
-        collection = self.universe[self._collection_name]
+        try:
+            collection = self.universe[self._collection_name]
+        except TypeError:
+            return False
         return collection.find_one({"name": name})
 
     def update(self, obj):
@@ -46,11 +54,7 @@ class MongoDatabase:
 
 
 def main():
-    db = MongoDatabase("Star_systems")
-    db = MongoDatabase
-    s = db.get("Solar 2")
-    print(f"{s['name']} system, Age is {s['age']}, mass center {s['mass_center']}")
-    db.close()
+    pass
 
 
 if __name__ == "__main__":
