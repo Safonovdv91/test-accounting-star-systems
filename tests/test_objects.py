@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import TestCase, main
 import sys, os
 
 sys.path.append(os.getcwd())
@@ -83,7 +83,7 @@ class Test_CelestialBody_Diameter(TestCase):
         self.assertEqual(test_star_system.set_diameter("-1.4"), False)
 
 
-class Test_CelestialBody_SetType(TestCase):
+class Test_CelestialBody_Set_Type(TestCase):
 
     def test_CelBody_receive_good(self):
         test_star_system = star_system_objects.CelestialBody()
@@ -92,3 +92,33 @@ class Test_CelestialBody_SetType(TestCase):
         self.assertEqual(test_star_system.set_type_object(0), True)
         self.assertEqual(test_star_system.set_type_object(4), True)
         self.assertEqual(test_star_system.set_type_object(5), False)
+
+class Test_CelestialBody_Set_Weight(TestCase):
+    """Testing set_ methods"""
+
+    def test_CelBody_Set_good(self):
+        test_obj = star_system_objects.CelestialBody()
+
+        self.assertEqual(test_obj.set_weight(24), True)
+        self.assertEqual(test_obj.set_weight(2134.12), True)
+        self.assertEqual(test_obj.set_weight(0), True)
+        self.assertEqual(test_obj.set_weight("24"), True)
+        self.assertEqual(test_obj.set_weight("24.2412"), True)
+        self.assertEqual(test_obj.set_weight("0"), True)
+
+    def test_CelBody_Set_String(self):
+        test_obj = star_system_objects.CelestialBody()
+
+        self.assertEqual(test_obj.set_weight("sfq2"), False)
+        self.assertEqual(test_obj.set_weight("@wr"), False)
+
+    def test_CelBody_Set_Above_zero(self):
+        test_obj = star_system_objects.CelestialBody()
+
+        self.assertEqual(test_obj.set_weight(-2312), False)
+        self.assertEqual(test_obj.set_weight(-2312.245), False)
+        self.assertEqual(test_obj.set_weight("-2561"), False)
+        self.assertEqual(test_obj.set_weight("-2561.241"), False)
+
+if __name__ == "__main__":
+    main()
