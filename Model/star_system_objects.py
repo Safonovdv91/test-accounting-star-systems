@@ -50,31 +50,32 @@ class CelestialBody(Universe_object):
     """ атрибуты:имя, тип, возраст, диаметр, масса
     методы:
         добавлять, удалять, редактировать"""
-    def __init__(self, type_object="Unknown", diametr=0, weight=0, id_star_system="Unknown"):
+    def __init__(self, diameter=0, weight=0, id_star_system="Unknown"):
         super().__init__()
         self._id_star_system = None
         self._weight = None
         self._type_object = None
         self._diameter = None
-        self.set_type_object(type_object)
-        self.set_diameter(diametr)
-        self.set_weight(weight)
-        self.set_star_system_id(id_star_system)
 
-    def set_type_object(self, choose):
+    def set_type_object(self):
         """Choose from [star, blackhole, blue gigant]"""
-        if choose == "Unknown":
-            self._type_object = choose
-            return True
-        type_objects = ["1 - Star", "2 - Worm Hole", "3 - Blue Gigant", "4 - Red Gigant"]
+        TYPES_OBJECTS = ("Unknown", "Star", "Worm Hole", "Blue Gigant", "Red Gigant")
+
+        print(f"What type?[0-{len(TYPES_OBJECTS)-1}]")
+        n = 0
+        for each in TYPES_OBJECTS:
+            print(f"{n}:{each}")
+            n += 1
         try:
-            choose = int(choose)
-            self._type_object = type_objects[choose-1]
-        except TypeError:
+            choose = int(input())
+            if choose == 0:
+                self._type_object = choose
+                return True
+            self._type_object = TYPES_OBJECTS[choose]
+            return True
+        except (TypeError, IndexError, ValueError):
             return False
-        except IndexError:
-            return False
-        return True
+
 
     def get_type_object(self):
         return self._type_object
@@ -113,10 +114,18 @@ class CelestialBody(Universe_object):
     def get_weight(self):
         return self._weight
 
-    def set_star_system_id(self, id_star_system="unknown"):
-
-        self._id_star_system = id_star_system
-        """ пока не известно, будет выпадать список из существующих систем"""
+    def set_star_system_name(self, star_system_name=None):
+        if star_system_name is not None:
+            self._id_star_system = star_system_name
+            return self._id_star_system
+        print(f"Which is '{self.get_name()}' system in?:")
+        print("Unknown")
+        star_systems = MongoDatabase("Star_systems").get()
+        for each in star_systems:
+            print(f"{each['name']}")
+        universe_name = MongoDatabase("Star_systems").get(input())["name"]
+        self._id_star_system = universe_name
+        return universe_name
 
     def get_star_system_id(self):
         return self._id_star_system
@@ -147,7 +156,6 @@ class Star_System(Universe_object):
 
     def get_mass_center(self):
         return self._mass_center
-
 
 
     def choose_type_universe_object(self):
