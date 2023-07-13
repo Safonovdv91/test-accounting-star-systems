@@ -32,9 +32,10 @@ class MongoDatabase:
             "star_system": obj.get_star_system_id()
         })
 
-    def get_object_from_star_system(self, name_star_system):
+    def get_object_from_star_system(self, name_star_system: str):
+        """Принимает название звездной системы и выдает объекты(планеты) которые в ней."""
         collection = self.universe[self._collection_name]
-        return collection.find({"name": name_star_system})
+        return collection.find({"star_system": name_star_system})
 
 
     def get(self, name="Any"):
@@ -54,8 +55,13 @@ class MongoDatabase:
 
 
 def main():
+    test_db = MongoDatabase("Universe_objects")
+    coll = []
+    type_mass_center = {"Star", "Worm Hole"}
+    for each in test_db.get_object_from_star_system("Solar"):
+        if each["type"] in type_mass_center:
+            coll.append(each)
+    print(coll)
     pass
-
-
 if __name__ == "__main__":
     main()
