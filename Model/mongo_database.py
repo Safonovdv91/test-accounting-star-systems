@@ -37,6 +37,11 @@ class MongoDatabase:
         collection = self.universe[self._collection_name]
         return collection.find({"star_system": name_star_system})
 
+    def get_stars_system(self):
+        """Возвращает все известные звездные системы системы"""
+        collection = self.universe[self._collection_name]
+        return collection.find({})
+
 
     def get(self, name="Any"):
         if name == "Any":
