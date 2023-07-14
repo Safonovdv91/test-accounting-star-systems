@@ -59,14 +59,34 @@ class MongoDatabase:
         pass
 
 
+class DB_Stars_Systems(MongoDatabase):
+    def __init__(self):
+        super().__init__("Star_systems")
+
+    def add(self, name, age):
+        collection = self.universe[self._collection_name]
+        collection.insert_one({
+            "name": name,
+            "age": age,
+            "mass_center": "unknown"
+        })
+
+
+class DB_Univers_Objects(MongoDatabase):
+    def __init__(self):
+        super().__init__("Univers_objects")
+        
+
+
 def main():
     test_db = MongoDatabase("Universe_objects")
     coll = []
     type_mass_center = {"Star", "Worm Hole"}
     for each in test_db.get_object_from_star_system("Solar"):
         if each["type"] in type_mass_center:
-            coll.append(each)
-    print(coll)
+            coll.append(each["name"])
+
+    return {"mess": coll}
     pass
 if __name__ == "__main__":
     main()
