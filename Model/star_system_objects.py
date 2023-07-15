@@ -2,8 +2,7 @@ from Model.mongo_database import MongoDatabase
 
 
 class Universe_object:
-    """
-    Общие свойства космического объекта :
+    """ Общие свойства космического объекта :
     атрибуты:
         имя
         возраст
@@ -49,7 +48,8 @@ class Universe_object:
 class CelestialBody(Universe_object):
     """ атрибуты:имя, тип, возраст, диаметр, масса
     методы:
-        добавлять, удалять, редактировать"""
+        добавлять, удалять, редактировать
+        """
     def __init__(self, diameter=0, weight=0, id_star_system="Unknown"):
         super().__init__()
         self._id_star_system = None
@@ -57,24 +57,13 @@ class CelestialBody(Universe_object):
         self._type_object = None
         self._diameter = None
 
-    def set_type_object(self):
-        """Choose from [star, blackhole, blue gigant]"""
-        TYPES_OBJECTS = ("Unknown", "Star", "Worm Hole", "Blue Gigant", "Red Gigant")
-
-        print(f"What type?[0-{len(TYPES_OBJECTS)-1}]")
-        n = 0
-        for each in TYPES_OBJECTS:
-            print(f"{n}:{each}")
-            n += 1
-        try:
-            choose = int(input())
-            if choose == 0:
-                self._type_object = choose
-                return True
-            self._type_object = TYPES_OBJECTS[choose]
-            return True
-        except (TypeError, IndexError, ValueError):
-            return False
+    def set_type_object(self, type_obj: str, permitted_types: set) -> bool:
+        """ Choose from permitted types like: [star, blackhole, blue gigant, etc..]
+        """
+        if type_obj not in permitted_types:
+            raise ValueError(f"type obj have to be permitted types:{permitted_types}")
+        self._type_object = type_obj
+        return True
 
 
     def get_type_object(self):
