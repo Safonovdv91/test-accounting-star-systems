@@ -1,7 +1,7 @@
 from Model.mongo_database import MongoDatabase
 
 
-class Universe_object:
+class UniverseObject:
     """ Общие свойства космического объекта :
     атрибуты:
         имя
@@ -13,6 +13,7 @@ class Universe_object:
         редактировать
 
     """
+
     def __init__(self, name="Unknown", age=0):
         self._age = None
         self._name = None
@@ -45,11 +46,12 @@ class Universe_object:
         return self._age
 
 
-class CelestialBody(Universe_object):
+class CelestialBody(UniverseObject):
     """ атрибуты:имя, тип, возраст, диаметр, масса
     методы:
         добавлять, удалять, редактировать
         """
+
     def __init__(self, diameter=0, weight=0, id_star_system="Unknown"):
         super().__init__()
         self._id_star_system = None
@@ -64,7 +66,6 @@ class CelestialBody(Universe_object):
             raise ValueError(f"type obj have to be permitted types:{permitted_types}")
         self._type_object = type_obj
         return True
-
 
     def get_type_object(self):
         return self._type_object
@@ -120,7 +121,7 @@ class CelestialBody(Universe_object):
         return self._id_star_system
 
 
-class Star_System(Universe_object):
+class StarSystem(UniverseObject):
     """
     Звездная система
     атрибуты:
@@ -136,8 +137,10 @@ class Star_System(Universe_object):
         делать космический объект центром масс
 
     """
+
     def __init__(self, name="Unknown", age=0, mass_center=None):
         super().__init__(name, age)
+        self._mass_center = None
         self.set_mass_center(mass_center)
 
     def set_mass_center(self, mass_center):
@@ -146,8 +149,8 @@ class Star_System(Universe_object):
     def get_mass_center(self):
         return self._mass_center
 
-
-    def choose_type_universe_object(self):
+    @staticmethod
+    def choose_type_universe_object():
         """Choose from [star, blackhole, blue gigant, Red Gigant]"""
         type_objects = ["1 - Star", "2 - Worm Hole", "3 - Blue Gigant", "4 - Red Gigant"]
         print("Choose type of object:")
@@ -161,7 +164,6 @@ class Star_System(Universe_object):
             return False
 
 
-
 def main():
     print("What do u want:")
     print("1 - Create star system , 2 - Create planet")
@@ -171,7 +173,6 @@ def main():
 
     types_universe_obj = ["Star", "Black Hole", "Planet", "Satellite"]
 
-if  __name__ == "__main__":
+
+if __name__ == "__main__":
     main()
-
-

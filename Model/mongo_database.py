@@ -1,4 +1,6 @@
 from pymongo import MongoClient
+
+
 # from star_system_objects import *
 
 
@@ -33,15 +35,16 @@ class MongoDatabase:
         })
 
     def get_object_from_star_system(self, name_star_system: str):
-        """Принимает название звездной системы и выдает объекты(планеты) которые в ней."""
+        """ Принимает название звездной системы и выдает объекты(планеты) которые в ней.
+        """
         collection = self.universe[self._collection_name]
         return collection.find({"star_system": name_star_system})
 
     def get_stars_system(self):
-        """Возвращает все известные звездные системы системы"""
+        """ Возвращает все известные звездные системы системы.
+        """
         collection = self.universe[self._collection_name]
         return collection.find({})
-
 
     def get(self, name="Any"):
         if name == "Any":
@@ -59,7 +62,7 @@ class MongoDatabase:
         pass
 
 
-class DB_Stars_Systems(MongoDatabase):
+class DBStarsSystems(MongoDatabase):
     def __init__(self):
         super().__init__("Star_systems")
 
@@ -75,7 +78,6 @@ class DB_Stars_Systems(MongoDatabase):
 class DB_Univers_Objects(MongoDatabase):
     def __init__(self):
         super().__init__("Univers_objects")
-        
 
 
 def main():
@@ -88,5 +90,7 @@ def main():
 
     return {"mess": coll}
     pass
+
+
 if __name__ == "__main__":
     main()

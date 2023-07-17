@@ -41,7 +41,7 @@ class Input_handler:
         checker.check_name(name)
         checker.check_age(age)
         if checker.check_name(name) and checker.check_age(age):
-            mongo_database.DB_Stars_Systems().add(name, age)
+            mongo_database.DBStarsSystems().add(name, age)
             return {"status": 200, "data": f"Add star system - '{name}' success"}
         else:
             return {"status": 200, "data": "Please send correct data"}

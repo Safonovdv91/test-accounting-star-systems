@@ -1,9 +1,9 @@
 from Model.mongo_database import MongoDatabase
-from Model.star_system_objects import Star_System, CelestialBody
+from Model.star_system_objects import StarSystem, CelestialBody
 
 
 def create_new_star_system():
-    new_star_system = Star_System()
+    new_star_system = StarSystem()
     print("What the system name?")
     print("name:", end="")
     while not new_star_system.set_name(input()):
