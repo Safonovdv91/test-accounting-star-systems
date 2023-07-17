@@ -7,7 +7,7 @@ print(os.getcwd())
 from Model import star_system_objects
 
 
-class Test_UniverseObject(TestCase):
+class TestUniverseObject(TestCase):
     def test_UniObj_good_name(self):
         test_star_system = star_system_objects.Universe_object()
 
@@ -47,7 +47,7 @@ class Test_UniverseObject(TestCase):
         self.assertEqual(test_star_system.set_age('@#$'), False)
 
 
-class Test_CelestialBody_Diameter(TestCase):
+class TestCelestialBodyDiameter(TestCase):
 
     def test_CelBody_receive_good(self):
         test_star_system = star_system_objects.CelestialBody()
@@ -83,7 +83,7 @@ class Test_CelestialBody_Diameter(TestCase):
         self.assertEqual(test_star_system.set_diameter("-1.4"), False)
 
 
-class Test_CelestialBody_Set_Type(TestCase):
+class TestCelestialBodySetType(TestCase):
 
     def test_CelBody_receive_good(self):
         test_star_system = star_system_objects.CelestialBody()
@@ -103,7 +103,7 @@ class Test_CelestialBody_Set_Type(TestCase):
             test_star_system.set_type_object("UnkUnjk", TYPES_OBJECTS)
 
 
-class Test_CelestialBody_Set_Weight(TestCase):
+class TestCelestialBodySetWeight(TestCase):
     """Testing set_ methods"""
 
     def test_CelBody_Set_good(self):
@@ -129,6 +129,7 @@ class Test_CelestialBody_Set_Weight(TestCase):
         self.assertEqual(test_obj.set_weight(-2312.245), False)
         self.assertEqual(test_obj.set_weight("-2561"), False)
         self.assertEqual(test_obj.set_weight("-2561.241"), False)
+
 
 if __name__ == "__main__":
     main()
