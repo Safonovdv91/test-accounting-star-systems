@@ -17,8 +17,8 @@ class MongoDatabase:
     def add_star_system(self, obj):
         collection = self.universe[self._collection_name]
         collection.insert_one({
-            "name": obj.get_name(),
-            "age": obj.get_age(),
+            "name": obj.name,
+            "age": obj.age,
             "mass_center": "unknown"
         })
 
@@ -26,9 +26,9 @@ class MongoDatabase:
         collection = self.universe[self._collection_name]
 
         collection.insert_one({
-            "name": obj.get_name(),
+            "name": obj.name,
             "type": obj.get_type_object(),
-            "age": obj.get_age(),
+            "age": obj.age,
             "weight": obj.get_weight(),
             "diameter": obj.get_diameter(),
             "star_system": obj.get_star_system_id()

@@ -1,5 +1,6 @@
 from unittest import TestCase, main
-import sys, os
+import sys
+import os
 
 sys.path.append(os.getcwd())
 print(os.getcwd())
@@ -8,43 +9,53 @@ from Model import star_system_objects
 
 
 class TestUniverseObject(TestCase):
-    def test_UniObj_good_name(self):
+    def test_set_good_name(self):
+        test_star_system = star_system_objects.UniverseObject("Solar0", 0)
+
+        test_star_system.name = "Solar"
+        self.assertEqual(test_star_system.name, "Solar")
+
+        test_star_system.name = "Solar2"
+        self.assertEqual(test_star_system.name, "Solar2")
+
+    def test_set_name_list(self):
+        test_star_system = star_system_objects.UniverseObject("Solar0", 0)
+
+        with self.assertRaises(TypeError):
+            test_star_system.name = [123, 515]
+
+        with self.assertRaises(TypeError):
+            test_star_system.name = ["wrq", "w;f2"]
+
+    def test_set_age_good(self):
         test_star_system = star_system_objects.UniverseObject()
 
-        self.assertEqual(test_star_system.set_name("Solar"), True)
-        self.assertEqual(test_star_system.set_name("1234"), True)
-        self.assertEqual(test_star_system.set_name("sjd23"), True)
+        test_star_system.age = 0
+        self.assertEqual(test_star_system.age, 0)
 
-    def test_UniObj_recieveName_List(self):
+        test_star_system.age = 5
+        self.assertEqual(test_star_system.age, 5)
+
+        test_star_system.age = 555.664
+        self.assertEqual(test_star_system.age, 555.664)
+
+    def test_UniObj_set_age_aboveZero(self):
         test_star_system = star_system_objects.UniverseObject()
 
-        self.assertEqual(test_star_system.set_name([12, "jh"]), False)
-        self.assertEqual(test_star_system.set_name([]), False)
+        with self.assertRaises(AttributeError):
+            test_star_system.age = -5
 
-    def test_UniObj_recieveAge_good(self):
+        with self.assertRaises(AttributeError):
+            test_star_system.age = -0.5
+
+    def test_UniObj_set_age_string(self):
         test_star_system = star_system_objects.UniverseObject()
 
-        self.assertEqual(test_star_system.set_age(0), True)
-        self.assertEqual(test_star_system.set_age("0"), True)
-        self.assertEqual(test_star_system.set_age(5), True)
-        self.assertEqual(test_star_system.set_age("5"), True)
-        self.assertEqual(test_star_system.set_age(45.5), True)
-        self.assertEqual(test_star_system.set_age("45.5"), True)
+        with self.assertRaises(TypeError):
+            test_star_system.age = ""
 
-    def test_UniObj_recieveAge_aboveZero(self):
-        test_star_system = star_system_objects.UniverseObject()
-
-        self.assertEqual(test_star_system.set_age(-1), False)
-        self.assertEqual(test_star_system.set_age(-0.5), False)
-        self.assertEqual(test_star_system.set_age(-1.5), False)
-
-    def test_UniObj_recieveAge_string(self):
-        test_star_system = star_system_objects.UniverseObject()
-
-        self.assertEqual(test_star_system.set_age(''), False)
-        self.assertEqual(test_star_system.set_age('asd'), False)
-        self.assertEqual(test_star_system.set_age('23ds'), False)
-        self.assertEqual(test_star_system.set_age('@#$'), False)
+        with self.assertRaises(TypeError):
+            test_star_system.age = "sdasd"
 
 
 class TestCelestialBodyDiameter(TestCase):

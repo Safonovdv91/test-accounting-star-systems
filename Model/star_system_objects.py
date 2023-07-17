@@ -14,36 +14,37 @@ class UniverseObject:
 
     """
 
-    def __init__(self, name="Unknown", age=0):
-        self._age = None
-        self._name = None
-        self.set_name(name)
-        self.set_age(age)
+    __slots__ = ("_name", "_age")
 
-    def set_name(self, name):
-        if name == "":
-            self._name = "Unknown"
-            return True
-        if type(name) is str:
-            self._name = name
-            return True
-        return False
+    def __init__(self, name="empty", age=1):
+        self.name = name
+        self.age = age
 
-    def get_name(self):
+    @property
+    def name(self):
         return self._name
 
-    def set_age(self, age):
-        try:
-            age = float(age)
-        except ValueError:
-            return False
-        if age < 0:
-            return False
-        self._age = age
-        return True
+    @name.setter
+    def name(self, value: str):
+        if not value:
+            raise AttributeError("Name cant be empty")
+        if isinstance(value, str):
+            self._name = value
+        else:
+            raise TypeError("Name object must be string")
 
-    def get_age(self):
+    @property
+    def age(self):
         return self._age
+
+    @age.setter
+    def age(self, value: (int, float)):
+        if isinstance(value, (int, float)):
+            if value < 0:
+                raise AttributeError("Age must be ge(>=) than 0")
+            self._age = value
+        else:
+            raise TypeError("Age must be int, or float")
 
 
 class CelestialBody(UniverseObject):
@@ -108,7 +109,7 @@ class CelestialBody(UniverseObject):
         if star_system_name is not None:
             self._id_star_system = star_system_name
             return self._id_star_system
-        print(f"Which is '{self.get_name()}' system in?:")
+        print(f"Which is '{self.name}' system in?:")
         print("Unknown")
         star_systems = MongoDatabase("Star_systems").get()
         for each in star_systems:

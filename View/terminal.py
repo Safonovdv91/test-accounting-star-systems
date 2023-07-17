@@ -6,12 +6,10 @@ def create_new_star_system():
     new_star_system = StarSystem()
     print("What the system name?")
     print("name:", end="")
-    while not new_star_system.set_name(input()):
-        print("Print plz correct name")
+    new_star_system.name = input()
     print("What the system age?")
     print("Age: ", end="")
-    while not new_star_system.set_age(input()):
-        print("Type correct age: ", end="")
+    new_star_system.age = input()
 
 
     MongoDatabase("Star_systems").add_star_system(new_star_system)
@@ -33,9 +31,7 @@ def create_new_universe_object():
 
     print("What the age?")
     print("Age: ", end="")
-    while not new_universe_obj.set_age(input()):
-        print("Type correct age: ", end="")
-
+    new_universe_obj.age = input()
     new_universe_obj.set_star_system_name()
 
     server = MongoDatabase("Universe_objects")
