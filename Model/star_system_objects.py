@@ -1,11 +1,10 @@
-from Model.mongo_database import MongoDatabase
+# from Model.mongo_database import DBStarsSystems, DBUniversObjects
+# from Model.mongo_database import DBStarsSystems
 
 
 class UniverseObject:
-    """ Общие свойства космического объекта :
-    атрибуты:
-        имя
-        возраст
+    """ Общие свойства космического объекта:
+    атрибуты: имя, возраст
 
     методы:
         добавлять
@@ -52,69 +51,64 @@ class CelestialBody(UniverseObject):
     методы:
         добавлять, удалять, редактировать
         """
+    permitted_types = ("star", "blackhole", "blue", "gigant", "Unknown", "Worm Hole", "Blue Gigant")
 
-    def __init__(self, diameter=0, weight=0, id_star_system="Unknown"):
-        super().__init__()
+    def __init__(self, diameter, weight, type_object, name="Unknown", age=0, id_star_system="Unknown"):
+        super().__init__(name=name, age=age)
         self._id_star_system = None
-        self._weight = None
-        self._type_object = None
-        self._diameter = None
+        self.diameter = diameter
+        self.weight = weight
+        self.type_object = type_object
+
+    @property
+    def type_object(self):
+        return self._type_object
+
+    @type_object.setter
+    def type_object(self, value):
+        permitted_types = self.permitted_types
+        if value not in permitted_types:
+            raise AttributeError(f"Type object must be {permitted_types}")
+        self._type_object = value
+
+    @property
+    def diameter(self):
+        return self._diameter
+
+    @diameter.setter
+    def diameter(self, value):
+
+        self._diameter = float(value)
+
+    @property
+    def weight(self):
+        return self._weight
+
+    @weight.setter
+    def weight(self, value):
+        self._weight = value
 
     def set_type_object(self, type_obj: str, permitted_types: set) -> bool:
         """ Choose from permitted types like: [star, blackhole, blue gigant, etc..]
         """
         if type_obj not in permitted_types:
             raise ValueError(f"type obj have to be permitted types:{permitted_types}")
-        self._type_object = type_obj
+        self.type_object = type_obj
         return True
 
     def get_type_object(self):
-        return self._type_object
+        return self.type_object
 
-    def set_diameter(self, diameter=None):
-        if diameter is None:
-            self._diameter = diameter
-            return True
-        try:
-            if float(diameter) >= 0:
-                self._diameter = float(diameter)
-                return True
-        except ValueError:
-            return False
-        except TypeError:
-            return False
-        return False
-
-    def get_diameter(self):
-        return self._diameter
-
-    def set_weight(self, weight):
-        if weight is None:
-            self._weight = weight
-            return True
-        try:
-            if float(weight) >= 0:
-                self._weight = float(weight)
-                return True
-        except ValueError:
-            return False
-        except TypeError:
-            return False
-        return False
-
-    def get_weight(self):
-        return self._weight
-
-    def set_star_system_name(self, star_system_name=None):
+    def set_star_system_name(self, star_system_name):
         if star_system_name is not None:
             self._id_star_system = star_system_name
             return self._id_star_system
         print(f"Which is '{self.name}' system in?:")
         print("Unknown")
-        star_systems = MongoDatabase("Star_systems").get()
+        star_systems = DBStarsSystems().get()
         for each in star_systems:
             print(f"{each['name']}")
-        universe_name = MongoDatabase("Star_systems").get(input())["name"]
+        universe_name = DBStarsSystems().get(input())["name"]
         self._id_star_system = universe_name
         return universe_name
 
@@ -128,7 +122,7 @@ class StarSystem(UniverseObject):
     атрибуты:
         имя
         возраст
-        центр масс: объект(типа звезда, или черная дыра
+        центр масс: объект(типа звезда, или черная дыра)
     методы:
         добавлять
         удалять
