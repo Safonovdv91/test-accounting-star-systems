@@ -7,5 +7,6 @@ app = FastAPI()
 def main():
     return {"Message": "Hello man"}
 
+
 if __name__ == "__main__":
     main()
