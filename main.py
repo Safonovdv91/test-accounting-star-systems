@@ -2,14 +2,37 @@ from datetime import datetime
 from enum import Enum
 from typing import List, Optional
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
+from fastapi_users import fastapi_users, FastAPIUsers
 from pydantic import BaseModel, Field
 
 from Model import mongo_database
 from Controller import output
 from Controller import input
+from auth.auth import auth_backend
+from auth.manager import get_user_manager
+from auth.schemas import UserRead, UserCreate
+from auth.database import User
+
+fastapi_users = FastAPIUsers[User, int](
+    get_user_manager,
+    [auth_backend],
+)
 
 app = FastAPI()
+# добавление
+
+app.include_router(
+    fastapi_users.get_auth_router(auth_backend),
+    prefix="/auth/jwt",
+    tags=["auth"],
+)
+
+app.include_router(
+    fastapi_users.get_register_router(UserRead, UserCreate),
+    prefix="/auth",
+    tags=["auth"],
+)
 
 fake_star_systems = [
     {"id": 1, "name": "Solar","age": 35_000, "mass_center": "Sun"},
@@ -69,6 +92,10 @@ class StarSystem(BaseModel):
     age: int | float = Field(ge=0)
     mass_center: Optional[CelestialBody]
 
+class User(BaseModel):
+    email: str
+    password: str
+
 @app.get("/stars_system/{stars_system_id}", response_model=List[StarSystem])
 def get_star_system(stars_system_id):
     return [system for system in fake_star_systems if system.get("id") == int(stars_system_id)]
@@ -91,3 +118,16 @@ def add_star_system(star_system: List[StarSystem]):
 @app.get("/universe_objects/", response_model=List[CelestialBody])
 def get_universe_objects(limit: int = 3, offset: int = 0):
     return fake_universe_objects[offset:][:limit]
+
+
+current_user = fastapi_users.current_user()
+
+
+@app.get("/protected-route")
+def protected_route(user: User = Depends(current_user)):
+    return f"Hello, {user.username}"
+
+
+@app.get("/unprotected-route")
+def unprotected_route():
+    return f"Hello, anonim"
