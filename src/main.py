@@ -3,21 +3,14 @@ from enum import Enum
 from typing import List, Optional
 
 from fastapi import FastAPI, Depends
-from fastapi_users import fastapi_users, FastAPIUsers
 from pydantic import BaseModel, Field
 
-from Model import mongo_database
-from Controller import output
-from Controller import input
-from auth.auth import auth_backend
-from auth.manager import get_user_manager
-from auth.schemas import UserRead, UserCreate
-from auth.database import User
 
-fastapi_users = FastAPIUsers[User, int](
-    get_user_manager,
-    [auth_backend],
-)
+from src.auth.base_config import fastapi_users, current_user, auth_backend
+from src.auth.schemas import UserRead, UserCreate
+
+from src.operation.router import router as router_operation
+
 
 app = FastAPI()
 # добавление
@@ -32,6 +25,10 @@ app.include_router(
     fastapi_users.get_register_router(UserRead, UserCreate),
     prefix="/auth",
     tags=["auth"],
+)
+
+app.include_router(
+    router_operation
 )
 
 fake_star_systems = [
@@ -120,7 +117,7 @@ def get_universe_objects(limit: int = 3, offset: int = 0):
     return fake_universe_objects[offset:][:limit]
 
 
-current_user = fastapi_users.current_user()
+
 
 
 @app.get("/protected-route")
