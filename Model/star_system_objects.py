@@ -1,11 +1,10 @@
-from Model.mongo_database import MongoDatabase
+# from Model.mongo_database import DBStarsSystems, DBUniversObjects
+# from Model.mongo_database import DBStarsSystems
 
 
-class Universe_object:
-    """ Общие свойства космического объекта :
-    атрибуты:
-        имя
-        возраст
+class UniverseObject:
+    """ Общие свойства космического объекта:
+    атрибуты: имя, возраст
 
     методы:
         добавлять
@@ -13,106 +12,103 @@ class Universe_object:
         редактировать
 
     """
-    def __init__(self, name="Unknown", age=0):
-        self._age = None
-        self._name = None
-        self.set_name(name)
-        self.set_age(age)
 
-    def set_name(self, name):
-        if name == "":
-            self._name = "Unknown"
-            return True
-        if type(name) is str:
-            self._name = name
-            return True
-        return False
+    __slots__ = ("_name", "_age")
 
-    def get_name(self):
+    def __init__(self, name="empty", age=1):
+        self.name = name
+        self.age = age
+
+    @property
+    def name(self):
         return self._name
 
-    def set_age(self, age):
-        try:
-            age = float(age)
-        except ValueError:
-            return False
-        if age < 0:
-            return False
-        self._age = age
-        return True
+    @name.setter
+    def name(self, value: str):
+        if not value:
+            raise AttributeError("Name cant be empty")
+        if isinstance(value, str):
+            self._name = value
+        else:
+            raise TypeError("Name object must be string")
 
-    def get_age(self):
+    @property
+    def age(self):
         return self._age
 
+    @age.setter
+    def age(self, value: (int, float)):
+        if isinstance(value, (int, float)):
+            if value < 0:
+                raise AttributeError("Age must be ge(>=) than 0")
+            self._age = value
+        else:
+            raise TypeError("Age must be int, or float")
 
-class CelestialBody(Universe_object):
+
+class CelestialBody(UniverseObject):
     """ атрибуты:имя, тип, возраст, диаметр, масса
     методы:
         добавлять, удалять, редактировать
         """
-    def __init__(self, diameter=0, weight=0, id_star_system="Unknown"):
-        super().__init__()
+    permitted_types = ("star", "blackhole", "blue", "gigant", "Unknown", "Worm Hole", "Blue Gigant")
+
+    def __init__(self, diameter, weight, type_object, name="Unknown", age=0, id_star_system="Unknown"):
+        super().__init__(name=name, age=age)
         self._id_star_system = None
-        self._weight = None
-        self._type_object = None
-        self._diameter = None
+        self.diameter = diameter
+        self.weight = weight
+        self.type_object = type_object
+
+    @property
+    def type_object(self):
+        return self._type_object
+
+    @type_object.setter
+    def type_object(self, value):
+        permitted_types = self.permitted_types
+        if value not in permitted_types:
+            raise AttributeError(f"Type object must be {permitted_types}")
+        self._type_object = value
+
+    @property
+    def diameter(self):
+        return self._diameter
+
+    @diameter.setter
+    def diameter(self, value):
+
+        self._diameter = float(value)
+
+    @property
+    def weight(self):
+        return self._weight
+
+    @weight.setter
+    def weight(self, value):
+        self._weight = value
 
     def set_type_object(self, type_obj: str, permitted_types: set) -> bool:
         """ Choose from permitted types like: [star, blackhole, blue gigant, etc..]
         """
         if type_obj not in permitted_types:
             raise ValueError(f"type obj have to be permitted types:{permitted_types}")
-        self._type_object = type_obj
+        self.type_object = type_obj
         return True
 
-
     def get_type_object(self):
-        return self._type_object
+        return self.type_object
 
-    def set_diameter(self, diameter=None):
-        if diameter is None:
-            self._diameter = diameter
-            return True
-        try:
-            if float(diameter) >= 0:
-                self._diameter = float(diameter)
-                return True
-        except ValueError:
-            return False
-        except TypeError:
-            return False
-        return False
-
-    def get_diameter(self):
-        return self._diameter
-
-    def set_weight(self, weight):
-        if weight is None:
-            self._weight = weight
-            return True
-        try:
-            if float(weight) >= 0:
-                self._weight = float(weight)
-                return True
-        except ValueError:
-            return False
-        except TypeError:
-            return False
-        return False
-
-    def get_weight(self):
-        return self._weight
-
-    def set_star_system_name(self, star_system_name=None):
+    def set_star_system_name(self, star_system_name):
         if star_system_name is not None:
             self._id_star_system = star_system_name
             return self._id_star_system
-        print(f"Which is '{self.get_name()}' system in?:")
+        print(f"Which is '{self.name}' system in?:")
         print("Unknown")
-        star_systems = MongoDatabase("Star_systems").get()
+        star_systems = DBStarsSystems().get()
         for each in star_systems:
             print(f"{each['name']}")
-        universe_name = MongoDatabase("Star_systems").get(input())["name"]
+        universe_name = DBStarsSystems().get(input())["name"]
         self._id_star_system = universe_name
         return universe_name
 
@@ -120,13 +116,13 @@ class CelestialBody(Universe_object):
         return self._id_star_system
 
 
-class Star_System(Universe_object):
+class StarSystem(UniverseObject):
     """
     Звездная система
     атрибуты:
         имя
         возраст
-        центр масс: объект(типа звезда, или черная дыра
+        центр масс: объект(типа звезда, или черная дыра)
     методы:
         добавлять
         удалять
@@ -136,8 +132,10 @@ class Star_System(Universe_object):
         делать космический объект центром масс
 
     """
+
     def __init__(self, name="Unknown", age=0, mass_center=None):
         super().__init__(name, age)
+        self._mass_center = None
         self.set_mass_center(mass_center)
 
     def set_mass_center(self, mass_center):
@@ -146,8 +144,8 @@ class Star_System(Universe_object):
     def get_mass_center(self):
         return self._mass_center
 
-
-    def choose_type_universe_object(self):
+    @staticmethod
+    def choose_type_universe_object():
         """Choose from [star, blackhole, blue gigant, Red Gigant]"""
         type_objects = ["1 - Star", "2 - Worm Hole", "3 - Blue Gigant", "4 - Red Gigant"]
         print("Choose type of object:")
@@ -161,7 +159,6 @@ class Star_System(Universe_object):
             return False
 
 
-
 def main():
     print("What do u want:")
     print("1 - Create star system , 2 - Create planet")
@@ -171,7 +168,6 @@ def main():
 
     types_universe_obj = ["Star", "Black Hole", "Planet", "Satellite"]
 
-if  __name__ == "__main__":
+
+if __name__ == "__main__":
     main()
-
-
