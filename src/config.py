@@ -11,4 +11,9 @@ DB_PASS = os.environ.get('DB_PASS')
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
+SMTP_HOST = 'smtp.gmail.com'
+SMTP_PORT = 465
+SMTP_USER = os.environ.get('SMTP_USER')
+SMTP_PASS = os.environ.get('SMTP_PASS')
+
 

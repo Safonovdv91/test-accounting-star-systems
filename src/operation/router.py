@@ -1,4 +1,7 @@
+import time
+
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi_cache.decorator import cache
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -111,77 +114,9 @@ async def add_specific_operation(new_operation: OperationCreate, session: AsyncS
         'details': 'update success'
     }
 
-test = [{
-  "id": 0,
-  "quantity": "21",
-  "figi": "sber",
-  "instrument_type": "bond",
-  "date": "2023-08-18T09:15:52.705",
-  "type": "Buy"
-},{
-  "id": 1,
-  "quantity": "10",
-  "figi": "tink",
-  "instrument_type": "bond",
-  "date": "2023-08-18T09:06:54.705",
-  "type": "Sell"
-},{
-  "id": 2,
-  "quantity": "17",
-  "figi": "luk",
-  "instrument_type": "bond",
-  "date": "2023-08-17T08:14:50.705",
-  "type": "Sell"
-},{
-  "id": 3,
-  "quantity": "8",
-  "figi": "sber",
-  "instrument_type": "bond",
-  "date": "2023-08-18T10:45:21.705",
-  "type": "Buy"
-},{
-  "id": 4,
-  "quantity": "15",
-  "figi": "tink",
-  "instrument_type": "bond",
-  "date": "2023-08-17T11:32:40.705",
-  "type": "Sell"
-}, {
-  "id": 5,
-  "quantity": "12",
-  "figi": "luk",
-  "instrument_type": "bond",
-  "date": "2023-08-18T11:20:15.705",
-  "type": "Buy"
-}, {
-  "id": 6,
-  "quantity": "19",
-  "figi": "sber",
-  "instrument_type": "bond",
-  "date": "2023-08-17T14:55:30.705",
-  "type": "Sell"
-}, {
-  "id": 7,
-  "quantity": "9",
-  "figi": "tink",
-  "instrument_type": "bond",
-  "date": "2023-08-18T12:40:48.705",
-  "type": "Buy"
-}, {
-  "id": 8,
-  "quantity": "16",
-  "figi": "luk",
-  "instrument_type": "bond",
-  "date": "2023-08-17T15:25:10.705",
-  "type": "Sell"
-}, {
-  "id": 9,
-  "quantity": "7",
-  "figi": "sber",
-  "instrument_type": "bond",
-  "date": "2023-08-18T13:10:22.705",
-  "type": "Buy"
-}]
-for each in test:
-    print(each)
 
+@router.get('/long_operation')
+@cache(expire=30)
+def get_long_operation():
+    time.sleep(3)
+    return {"long operation thinking"}
