@@ -27,6 +27,7 @@ def get_email_template_dashboard(username:str):
     )
     return email
 
+
 @celery.task
 def send_email_report_dashboard(username:str):
     email = get_email_template_dashboard(username)

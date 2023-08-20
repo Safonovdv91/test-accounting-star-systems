@@ -53,7 +53,7 @@ class CelestialBody(UniverseObject):
         """
     permitted_types = ("star", "blackhole", "blue", "gigant", "Unknown", "Worm Hole", "Blue Gigant")
 
-    def __init__(self, diameter, weight, type_object, name="Unknown", age=0, id_star_system="Unknown"):
+    def __init__(self, diameter: object, weight: object, type_object: object, name: object = "Unknown", age: object = 0, id_star_system: object = "Unknown") -> object:
         super().__init__(name=name, age=age)
         self._id_star_system = None
         self.diameter = diameter
@@ -72,14 +72,15 @@ class CelestialBody(UniverseObject):
         self._type_object = value
 
     @property
-    def diameter(self):
+    def diameter(self) -> float:
         return self._diameter
 
     @diameter.setter
     def diameter(self, value):
-
-        self._diameter = float(value)
-
+        try:
+            self._diameter = float(value)
+        except (TypeError, ValueError):
+            raise ValueError("Diameter must be int, or float")
     @property
     def weight(self):
         return self._weight

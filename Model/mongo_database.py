@@ -1,5 +1,7 @@
 from pymongo import MongoClient
 
+from Model.star_system_objects import StarSystem, CelestialBody
+
 
 # from star_system_objects import *
 
@@ -29,8 +31,8 @@ class MongoDatabase:
             "name": obj.name,
             "type": obj.get_type_object(),
             "age": obj.age,
-            "weight": obj.get_weight(),
-            "diameter": obj.get_diameter(),
+            "weight": obj.weight,
+            "diameter": obj.diameter,
             "star_system": obj.get_star_system_id()
         })
 
@@ -41,7 +43,7 @@ class MongoDatabase:
         return collection.find({"star_system": name_star_system})
 
     def get_stars_system(self):
-        """ Возвращает все известные звездные системы системы.
+        """ Возвращает все известные звездные системы.
         """
         collection = self.universe[self._collection_name]
         return collection.find({})
@@ -63,8 +65,12 @@ class MongoDatabase:
 
 
 class DBStarsSystems(MongoDatabase):
+    _shared_states = {}
+
     def __init__(self):
-        super().__init__("Star_systems")
+        self.__dict__ = self._shared_states
+        if not self._shared_states:
+            super().__init__("star_system")
 
     def add(self, name, age):
         collection = self.universe[self._collection_name]
@@ -75,21 +81,24 @@ class DBStarsSystems(MongoDatabase):
         })
 
 
-class DB_Univers_Objects(MongoDatabase):
+class DBUniversObjects(MongoDatabase):
+    _shared_states = {}
+    instance = None
+
     def __init__(self):
-        super().__init__("Univers_objects")
+        self.__dict__ = self._shared_states
+        if not self._shared_states:
+            super().__init__("Univers_objects")
 
 
 def main():
-    test_db = MongoDatabase("Universe_objects")
-    coll = []
-    type_mass_center = {"Star", "Worm Hole"}
-    for each in test_db.get_object_from_star_system("Solar"):
-        if each["type"] in type_mass_center:
-            coll.append(each["name"])
+    test_db = DBUniversObjects()
+    test_db2 = DBUniversObjects()
 
-    return {"mess": coll}
-    pass
+    new_object = CelestialBody(123, 222, "blackhole", "bh1")
+    test_db.add_universe_object(new_object)
+    new_object2 = CelestialBody(321, 321, "blackhole", "bh2")
+    test_db2.add_universe_object(new_object2)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,7 @@
 import time
 
+from src.auth.base_config import current_user
+
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi_cache.decorator import cache
 from sqlalchemy import select, insert, update, delete
@@ -22,10 +24,12 @@ async def get_specific_operation(operation_type: str, session: AsyncSession = De
     try:
         query = select(operation)\
             .where(operation.c.type == operation_type)
+        # query = select(operation)
         result = await session.execute(query)
+        lk = result.all()
         return {
             'status': '200',
-            'data': result.all(),
+            'data': lk[0],
             'detail': None
         }
     except Exception:
@@ -37,7 +41,10 @@ async def get_specific_operation(operation_type: str, session: AsyncSession = De
 
 
 @router.patch('/update_type')
-async def patch_operation_id_type(operation_id: int, new_type: str, session: AsyncSession = Depends(get_async_session)):
+async def patch_operation_id_type(
+        operation_id: int,
+        new_type: str,
+        session: AsyncSession = Depends(get_async_session)):
     try:
         query = select(operation).\
             where(operation.c.id == operation_id)

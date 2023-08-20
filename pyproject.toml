@@ -1,0 +1,7 @@
+[tool.pytest.ini_options]
+pythonpath = [
+    ".", "src",
+]
+asyncio_mode = "auto" # т.к. стоит 'auto' - то асинхронные операции распознаются автоматически
+    # для использование фикстур tests.conflest.py(& etc..): @pytest.fixture,
+    # если бы стоял мод 'strict' пришлось бы писать @pytest_asyncio.fixture
